@@ -137,4 +137,83 @@ trait PageSiblings
     {
         return $this->siblings($self)->filter('intendedTemplate', $this->intendedTemplate()->name());
     }
+
+    /**
+     * Returns the next page in defined cycle
+     *
+     * @return Collection
+     */
+    public function nextCycle()
+    {
+        return $this->filterCycle($this->nextAll($this->siblingsCycle()))->first();
+    }
+
+    /**
+     * Returns the prev page in defined cycle
+     *
+     * @return Collection
+     */
+    public function prevCycle()
+    {
+        return $this->filterCycle($this->prevAll($this->siblingsCycle()))->last();
+    }
+
+    /**
+     * Returns siblings of defined cycle
+     *
+     * @return \Kirby\Toolkit\Collection
+     */
+    protected function siblingsCycle()
+    {
+        $cycle  = $this->blueprint()->cycle() ?? [];
+        $sortBy = $cycle['sortBy'] ?? null;
+        $status = $cycle['status'] ?? null;
+
+        // if status is defined in cycle, all items in the collection are used (drafts, listed and unlisted)
+        // otherwise it depends on the status of the page
+        $collection = $status !== null ? $this->parentModel()->childrenAndDrafts() : $this->siblingsCollection();
+
+        // sort the collection if custom sortBy defined in cycle
+        // otherwise default sorting will apply
+        if ($sortBy !== null) {
+            return $collection->sortBy(...$collection::sortArgs($sortBy));
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns filtered siblings for defined cycle
+     *
+     * @param Collection $collection
+     * @return \Kirby\Cms\Collection
+     */
+    protected function filterCycle(Collection $collection)
+    {
+        $cycle = $this->blueprint()->cycle() ?? [];
+
+        if (empty($cycle) === false) {
+            $status   = $cycle['status'] ?? $this->status();
+            $template = $cycle['template'] ?? $this->intendedTemplate();
+
+            $statuses  = is_array($status) === true ? $status : [$status];
+            $templates = is_array($template) === true ? $template : [$template];
+
+            // do not filter if template cycle is all
+            if (in_array('all', $templates) === false) {
+                $collection = $collection->filterBy('intendedTemplate', 'in', $templates);
+            }
+
+            // do not filter if status cycle is all
+            if (in_array('all', $statuses) === false) {
+                $collection = $collection->filterBy('status', 'in', $statuses);
+            }
+        } else {
+            $collection = $collection
+                ->filterBy('intendedTemplate', $this->intendedTemplate())
+                ->filterBy('status', $this->status());
+        }
+
+        return $collection->filterBy('isReadable', true);
+    }
 }

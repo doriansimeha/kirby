@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 class PageSiblingsTest extends TestCase
 {
     protected $app;
+    protected $fixtures;
 
     public function setUp(): void
     {
@@ -321,5 +322,216 @@ class PageSiblingsTest extends TestCase
 
         $this->assertFalse($siblings->has('a'));
         $this->assertFalse($siblings->has('b'));
+    }
+
+    public function testCycleOne()
+    {
+        $app = new App([
+            'roots' => [
+                'index' => $this->fixtures = __DIR__ . '/fixtures/PageSiblingsTest'
+            ],
+            'blueprints' => [
+                'pages/a' => [
+                    'title' => 'A',
+                    'cycle' => [
+                        'status' => 'all',
+                        'template' => 'all'
+                    ]
+                ],
+                'pages/b' => [
+                    'title' => 'B',
+                    'cycle' => [
+                        'status' => 'all',
+                        'template' => 'all'
+                    ]
+                ]
+            ]
+        ]);
+
+        $app->impersonate('kirby');
+
+        $page = Page::create([
+            'slug' => 'test'
+        ]);
+
+        $page->createChild([
+            'slug'     => 'a',
+            'template' => 'a'
+        ]);
+
+        $expectedPrevPage = $page->createChild([
+            'slug'     => 'b',
+            'template' => 'b'
+        ]);
+
+        $testPage = $page->createChild([
+            'slug'     => 'c',
+            'template' => 'a'
+        ]);
+
+        $expectedNextPage = $page->createChild([
+            'slug'     => 'd',
+            'template' => 'b'
+        ]);
+
+        $page->createChild([
+            'slug'     => 'e',
+            'template' => 'a'
+        ]);
+
+        $page->createChild([
+            'slug'     => 'f',
+            'template' => 'b'
+        ]);
+
+        $cycleOption = $testPage->blueprint()->cycle();
+        $this->assertSame(['status' => 'all', 'template' => 'all'], $cycleOption);
+        $this->assertSame($expectedPrevPage, $testPage->prevCycle($cycleOption));
+        $this->assertSame($expectedNextPage, $testPage->nextCycle($cycleOption));
+    }
+
+    public function testCycleTwo()
+    {
+        $app = new App([
+            'roots' => [
+                'index' => $this->fixtures = __DIR__ . '/fixtures/PageSiblingsTest'
+            ],
+            'blueprints' => [
+                'pages/c' => [
+                    'title' => 'C',
+                    'cycle' => [
+                        'status' => ['listed'],
+                        'template' => ['c']
+                    ]
+                ],
+                'pages/d' => [
+                    'title' => 'D',
+                    'cycle' => [
+                        'status' => ['listed'],
+                        'template' => ['c']
+                    ]
+                ]
+            ]
+        ]);
+
+        $app->impersonate('kirby');
+
+        $page = Page::create([
+            'slug' => 'test'
+        ]);
+
+        $expectedPrevPage = $page->createChild([
+            'slug'     => 'a',
+            'template' => 'c'
+        ])->changeStatus('listed');
+
+        $page->createChild([
+            'slug'     => 'b',
+            'template' => 'd'
+        ])->changeStatus('listed');
+
+        $page->createChild([
+            'slug'     => 'c',
+            'template' => 'c'
+        ]);
+
+        $testPage = $page->createChild([
+            'slug'     => 'd',
+            'template' => 'd'
+        ])->changeStatus('listed');
+
+        $expectedNextPage = $page->createChild([
+            'slug'     => 'e',
+            'template' => 'c'
+        ])->changeStatus('listed');
+
+        $page->createChild([
+            'slug'     => 'f',
+            'template' => 'd'
+        ])->changeStatus('listed');
+
+        $cycleOption = $testPage->blueprint()->cycle();
+
+        $this->assertSame([
+            'status' => ['listed'],
+            'template' => ['c']
+        ], $cycleOption);
+        $this->assertSame($expectedPrevPage, $testPage->prevCycle($cycleOption));
+        $this->assertSame($expectedNextPage, $testPage->nextCycle($cycleOption));
+    }
+
+    public function testCycleThree()
+    {
+        $app = new App([
+            'roots' => [
+                'index' => $this->fixtures = __DIR__ . '/fixtures/PageSiblingsTest'
+            ],
+            'blueprints' => [
+                'pages/e' => [
+                    'title' => 'E',
+                    'cycle' => [
+                        'status' => ['listed'],
+                        'template' => ['e', 'f']
+                    ]
+                ],
+                'pages/f' => [
+                    'title' => 'F',
+                    'cycle' => [
+                        'status' => ['listed'],
+                        'template' => ['e', 'f']
+                    ]
+                ]
+            ]
+        ]);
+
+        $app->impersonate('kirby');
+
+        $page = Page::create([
+            'slug' => 'test'
+        ]);
+
+        $expectedPrevPage = $page->createChild([
+            'slug'     => 'a',
+            'template' => 'e'
+        ])->changeStatus('listed');
+
+        $page->createChild([
+            'slug'     => 'b',
+            'template' => 'f'
+        ])->changeStatus('unlisted');
+
+        $page->createChild([
+            'slug'     => 'c',
+            'template' => 'e'
+        ])->changeStatus('unlisted');
+
+        $testPage = $page->createChild([
+            'slug'     => 'd',
+            'template' => 'f'
+        ])->changeStatus('listed');
+
+        $page->createChild([
+            'slug'     => 'e',
+            'template' => 'e'
+        ])->changeStatus('unlisted');
+
+        $expectedNextPage = $page->createChild([
+            'slug'     => 'f',
+            'template' => 'f'
+        ])->changeStatus('listed');
+
+        $cycleOption = $testPage->blueprint()->cycle();
+
+        $this->assertSame([
+            'status' => ['listed'],
+            'template' => ['e', 'f']
+        ], $cycleOption);
+        $this->assertSame($expectedPrevPage, $testPage->prevCycle($cycleOption));
+        $this->assertSame($expectedNextPage, $testPage->nextCycle($cycleOption));
+    }
+
+    public function tearDown(): void
+    {
+        Dir::remove($this->fixtures . '/content');
     }
 }
