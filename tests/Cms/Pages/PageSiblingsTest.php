@@ -324,7 +324,7 @@ class PageSiblingsTest extends TestCase
         $this->assertFalse($siblings->has('b'));
     }
 
-    public function testCycleOne()
+    public function testNavigationOne()
     {
         $app = new App([
             'roots' => [
@@ -333,14 +333,14 @@ class PageSiblingsTest extends TestCase
             'blueprints' => [
                 'pages/a' => [
                     'title' => 'A',
-                    'cycle' => [
+                    'navigation' => [
                         'status' => 'all',
                         'template' => 'all'
                     ]
                 ],
                 'pages/b' => [
                     'title' => 'B',
-                    'cycle' => [
+                    'navigation' => [
                         'status' => 'all',
                         'template' => 'all'
                     ]
@@ -384,13 +384,13 @@ class PageSiblingsTest extends TestCase
             'template' => 'b'
         ]);
 
-        $cycleOption = $testPage->blueprint()->cycle();
-        $this->assertSame(['status' => 'all', 'template' => 'all'], $cycleOption);
-        $this->assertSame($expectedPrevPage, $testPage->prevCycle($cycleOption));
-        $this->assertSame($expectedNextPage, $testPage->nextCycle($cycleOption));
+        $navigationOption = $testPage->blueprint()->navigation();
+        $this->assertSame(['status' => 'all', 'template' => 'all'], $navigationOption);
+        $this->assertSame($expectedPrevPage, $testPage->prevNavigation($navigationOption));
+        $this->assertSame($expectedNextPage, $testPage->nextNavigation($navigationOption));
     }
 
-    public function testCycleTwo()
+    public function testNavigationTwo()
     {
         $app = new App([
             'roots' => [
@@ -399,14 +399,14 @@ class PageSiblingsTest extends TestCase
             'blueprints' => [
                 'pages/c' => [
                     'title' => 'C',
-                    'cycle' => [
+                    'navigation' => [
                         'status' => ['listed'],
                         'template' => ['c']
                     ]
                 ],
                 'pages/d' => [
                     'title' => 'D',
-                    'cycle' => [
+                    'navigation' => [
                         'status' => ['listed'],
                         'template' => ['c']
                     ]
@@ -450,17 +450,17 @@ class PageSiblingsTest extends TestCase
             'template' => 'd'
         ])->changeStatus('listed');
 
-        $cycleOption = $testPage->blueprint()->cycle();
+        $navigationOption = $testPage->blueprint()->navigation();
 
         $this->assertSame([
             'status' => ['listed'],
             'template' => ['c']
-        ], $cycleOption);
-        $this->assertSame($expectedPrevPage, $testPage->prevCycle($cycleOption));
-        $this->assertSame($expectedNextPage, $testPage->nextCycle($cycleOption));
+        ], $navigationOption);
+        $this->assertSame($expectedPrevPage, $testPage->prevNavigation($navigationOption));
+        $this->assertSame($expectedNextPage, $testPage->nextNavigation($navigationOption));
     }
 
-    public function testCycleThree()
+    public function testNavigationThree()
     {
         $app = new App([
             'roots' => [
@@ -469,14 +469,14 @@ class PageSiblingsTest extends TestCase
             'blueprints' => [
                 'pages/e' => [
                     'title' => 'E',
-                    'cycle' => [
+                    'navigation' => [
                         'status' => ['listed'],
                         'template' => ['e', 'f']
                     ]
                 ],
                 'pages/f' => [
                     'title' => 'F',
-                    'cycle' => [
+                    'navigation' => [
                         'status' => ['listed'],
                         'template' => ['e', 'f']
                     ]
@@ -520,14 +520,14 @@ class PageSiblingsTest extends TestCase
             'template' => 'f'
         ])->changeStatus('listed');
 
-        $cycleOption = $testPage->blueprint()->cycle();
+        $navigationOption = $testPage->blueprint()->navigation();
 
         $this->assertSame([
             'status' => ['listed'],
             'template' => ['e', 'f']
-        ], $cycleOption);
-        $this->assertSame($expectedPrevPage, $testPage->prevCycle($cycleOption));
-        $this->assertSame($expectedNextPage, $testPage->nextCycle($cycleOption));
+        ], $navigationOption);
+        $this->assertSame($expectedPrevPage, $testPage->prevNavigation($navigationOption));
+        $this->assertSame($expectedNextPage, $testPage->nextNavigation($navigationOption));
     }
 
     public function tearDown(): void

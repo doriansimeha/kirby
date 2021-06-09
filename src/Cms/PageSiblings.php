@@ -139,81 +139,81 @@ trait PageSiblings
     }
 
     /**
-     * Returns the next page in defined cycle
-     *
-     * @return Collection
-     */
-    public function nextCycle()
-    {
-        return $this->filterCycle($this->nextAll($this->siblingsCycle()))->first();
-    }
-
-    /**
-     * Returns the prev page in defined cycle
-     *
-     * @return Collection
-     */
-    public function prevCycle()
-    {
-        return $this->filterCycle($this->prevAll($this->siblingsCycle()))->last();
-    }
-
-    /**
-     * Returns siblings of defined cycle
+     * Returns the next page in defined navigation
      *
      * @return \Kirby\Toolkit\Collection
      */
-    protected function siblingsCycle()
+    public function nextNavigation()
     {
-        $cycle  = $this->blueprint()->cycle() ?? [];
-        $sortBy = $cycle['sortBy'] ?? null;
-        $status = $cycle['status'] ?? null;
+        return $this->filterNavigation($this->nextAll($this->siblingsNavigation()))->first();
+    }
 
-        // if status is defined in cycle, all items in the collection are used (drafts, listed and unlisted)
+    /**
+     * Returns the prev page in defined navigation
+     *
+     * @return \Kirby\Toolkit\Collection
+     */
+    public function prevNavigation()
+    {
+        return $this->filterNavigation($this->prevAll($this->siblingsNavigation()))->last();
+    }
+
+    /**
+     * Returns siblings of defined navigation
+     *
+     * @return \Kirby\Toolkit\Collection
+     */
+    protected function siblingsNavigation()
+    {
+        $navigation  = $this->blueprint()->navigation() ?? [];
+        $sortBy = $navigation['sortBy'] ?? null;
+        $status = $navigation['status'] ?? null;
+
+        // if status is defined in navigation, all items in the collection are used (drafts, listed and unlisted)
         // otherwise it depends on the status of the page
         $collection = $status !== null ? $this->parentModel()->childrenAndDrafts() : $this->siblingsCollection();
 
-        // sort the collection if custom sortBy defined in cycle
+        // sort the collection if custom sortBy defined in navigation
         // otherwise default sorting will apply
         if ($sortBy !== null) {
-            return $collection->sortBy(...$collection::sortArgs($sortBy));
+            return $collection->sort(...$collection::sortArgs($sortBy));
         }
 
         return $collection;
     }
 
     /**
-     * Returns filtered siblings for defined cycle
+     * Returns filtered siblings for defined navigation
      *
      * @param Collection $collection
-     * @return \Kirby\Cms\Collection
+     * @return \Kirby\Toolkit\Collection
      */
-    protected function filterCycle(Collection $collection)
+    protected function filterNavigation(Collection $collection)
     {
-        $cycle = $this->blueprint()->cycle() ?? [];
+        $navigation = $this->blueprint()->navigation() ?? [];
 
-        if (empty($cycle) === false) {
-            $status   = $cycle['status'] ?? $this->status();
-            $template = $cycle['template'] ?? $this->intendedTemplate();
+        if (empty($navigation) === false) {
+            $status   = $navigation['status'] ?? $this->status();
+            $template = $navigation['template'] ?? $this->intendedTemplate();
 
             $statuses  = is_array($status) === true ? $status : [$status];
             $templates = is_array($template) === true ? $template : [$template];
 
-            // do not filter if template cycle is all
+            // do not filter if template navigation is all
             if (in_array('all', $templates) === false) {
-                $collection = $collection->filterBy('intendedTemplate', 'in', $templates);
+                $collection = $collection->filter('intendedTemplate', 'in', $templates);
             }
 
-            // do not filter if status cycle is all
+            // do not filter if status navigation is all
             if (in_array('all', $statuses) === false) {
-                $collection = $collection->filterBy('status', 'in', $statuses);
+                $collection = $collection->filter('status', 'in', $statuses);
             }
         } else {
             $collection = $collection
-                ->filterBy('intendedTemplate', $this->intendedTemplate())
-                ->filterBy('status', $this->status());
+                ->filter('intendedTemplate', $this->intendedTemplate())
+                ->filter('status', $this->status());
         }
 
-        return $collection->filterBy('isReadable', true);
+        return $collection->filter('isReadable', true);
     }
 }
