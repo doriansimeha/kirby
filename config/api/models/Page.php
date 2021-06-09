@@ -45,7 +45,7 @@ return [
             return $page->isSortable();
         },
         'next' => function (Page $page) {
-            return $page->nextNavigation();
+            return $page->panel()->next();
         },
         'num' => function (Page $page) {
             return $page->num();
@@ -66,7 +66,7 @@ return [
             return $page->parents()->flip();
         },
         'prev' => function (Page $page) {
-            return $page->prevNavigation();
+            return $page->panel()->prev();
         },
         'previewUrl' => function (Page $page) {
             return $page->previewUrl();

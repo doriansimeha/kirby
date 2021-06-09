@@ -118,7 +118,7 @@ trait PageSiblings
      *
      * @return \Kirby\Cms\Collection
      */
-    protected function siblingsCollection()
+    public function siblingsCollection()
     {
         if ($this->isDraft() === true) {
             return $this->parentModel()->drafts();
@@ -136,84 +136,5 @@ trait PageSiblings
     public function templateSiblings(bool $self = true)
     {
         return $this->siblings($self)->filter('intendedTemplate', $this->intendedTemplate()->name());
-    }
-
-    /**
-     * Returns the next page in defined navigation
-     *
-     * @return \Kirby\Cms\Collection
-     */
-    public function nextNavigation()
-    {
-        return $this->filterNavigation($this->nextAll($this->siblingsNavigation()))->first();
-    }
-
-    /**
-     * Returns the prev page in defined navigation
-     *
-     * @return \Kirby\Cms\Collection
-     */
-    public function prevNavigation()
-    {
-        return $this->filterNavigation($this->prevAll($this->siblingsNavigation()))->last();
-    }
-
-    /**
-     * Returns siblings of defined navigation
-     *
-     * @return \Kirby\Cms\Collection
-     */
-    protected function siblingsNavigation()
-    {
-        $navigation  = $this->blueprint()->navigation() ?? [];
-        $sortBy = $navigation['sortBy'] ?? null;
-        $status = $navigation['status'] ?? null;
-
-        // if status is defined in navigation, all items in the collection are used (drafts, listed and unlisted)
-        // otherwise it depends on the status of the page
-        $collection = $status !== null ? $this->parentModel()->childrenAndDrafts() : $this->siblingsCollection();
-
-        // sort the collection if custom sortBy defined in navigation
-        // otherwise default sorting will apply
-        if ($sortBy !== null) {
-            return $collection->sort(...$collection::sortArgs($sortBy));
-        }
-
-        return $collection;
-    }
-
-    /**
-     * Returns filtered siblings for defined navigation
-     *
-     * @param Collection $collection
-     * @return \Kirby\Cms\Collection
-     */
-    protected function filterNavigation(Collection $collection)
-    {
-        $navigation = $this->blueprint()->navigation() ?? [];
-
-        if (empty($navigation) === false) {
-            $status   = $navigation['status'] ?? $this->status();
-            $template = $navigation['template'] ?? $this->intendedTemplate();
-
-            $statuses  = is_array($status) === true ? $status : [$status];
-            $templates = is_array($template) === true ? $template : [$template];
-
-            // do not filter if template navigation is all
-            if (in_array('all', $templates) === false) {
-                $collection = $collection->filter('intendedTemplate', 'in', $templates);
-            }
-
-            // do not filter if status navigation is all
-            if (in_array('all', $statuses) === false) {
-                $collection = $collection->filter('status', 'in', $statuses);
-            }
-        } else {
-            $collection = $collection
-                ->filter('intendedTemplate', $this->intendedTemplate())
-                ->filter('status', $this->status());
-        }
-
-        return $collection->filter('isReadable', true);
     }
 }

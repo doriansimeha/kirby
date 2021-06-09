@@ -2,6 +2,8 @@
 
 namespace Kirby\Panel;
 
+use Kirby\Cms\Collection;
+
 /**
  * Provides information about the page model for the Panel
  * @since 3.6.0
@@ -150,21 +152,11 @@ class Page extends Model
                 'title'      => $page->title()->toString(),
             ],
             'next' => function () use ($page) {
-                $next = $page
-                    ->nextAll()
-                    ->filterBy('intendedTemplate', $page->intendedTemplate())
-                    ->filterBy('status', $page->status())
-                    ->filterBy('isReadable', true)
-                    ->first();
+                $next = $page->panel()->next();
                 return $next ? $next->panel()->prevnext('title') : null;
             },
             'prev'   => function () use ($page) {
-                $prev = $page
-                    ->prevAll()
-                    ->filterBy('intendedTemplate', $page->intendedTemplate())
-                    ->filterBy('status', $page->status())
-                    ->filterBy('isReadable', true)
-                    ->last();
+                $prev = $page->panel()->prev();
                 return $prev ? $prev->panel()->prevnext('title') : null;
             },
             'status' => function () use ($page) {
@@ -193,5 +185,84 @@ class Page extends Model
             'props'      => $this->props(),
             'title'      => $page->title()->toString(),
         ];
+    }
+
+    /**
+     * Returns the next page in defined navigation
+     *
+     * @return \Kirby\Cms\Collection
+     */
+    public function next()
+    {
+        return $this->filter($this->model->nextAll($this->siblings()))->first();
+    }
+
+    /**
+     * Returns the prev page in defined navigation
+     *
+     * @return \Kirby\Cms\Collection
+     */
+    public function prev()
+    {
+        return $this->filter($this->model->prevAll($this->siblings()))->last();
+    }
+
+    /**
+     * Returns siblings of defined navigation
+     *
+     * @return \Kirby\Cms\Collection
+     */
+    public function siblings()
+    {
+        $page       = $this->model;
+        $model      = $page->parentModel();
+        $navigation = $page->blueprint()->navigation();
+        $sortBy     = $navigation['sortBy'] ?? null;
+        $status     = $navigation['status'] ?? null;
+
+        // if status is defined in navigation, all items in the collection are used (drafts, listed and unlisted)
+        // otherwise it depends on the status of the page
+        $collection = $status !== null ? $model->childrenAndDrafts() : $page->siblingsCollection();
+
+        // sort the collection if custom sortBy defined in navigation
+        // otherwise default sorting will apply
+        if ($sortBy !== null) {
+            return $collection->sort(...$collection::sortArgs($sortBy));
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns filtered siblings for defined navigation
+     *
+     * @param \Kirby\Cms\Collection $collection
+     * @return \Kirby\Cms\Collection
+     */
+    public function filter(Collection $collection)
+    {
+        $page       = $this->model;
+        $navigation = $page->blueprint()->navigation();
+
+        if (empty($navigation) === false) {
+            $statuses  = (array)($navigation['status'] ?? $page->status());
+            $templates = (array)($navigation['template'] ?? $page->intendedTemplate());
+
+            // do not filter if template navigation is all
+            if (in_array('all', $templates) === false) {
+                $collection = $collection->filter('intendedTemplate', 'in', $templates);
+            }
+
+            // do not filter if status navigation is all
+            if (in_array('all', $statuses) === false) {
+                $collection = $collection->filter('status', 'in', $statuses);
+            }
+        } else {
+            $collection = $collection
+                ->filter('intendedTemplate', $page->intendedTemplate())
+                ->filter('status', $page->status());
+        }
+
+        return $collection->filter('isReadable', true);
     }
 }
