@@ -141,7 +141,7 @@ trait PageSiblings
     /**
      * Returns the next page in defined navigation
      *
-     * @return \Kirby\Toolkit\Collection
+     * @return \Kirby\Cms\Collection
      */
     public function nextNavigation()
     {
@@ -151,7 +151,7 @@ trait PageSiblings
     /**
      * Returns the prev page in defined navigation
      *
-     * @return \Kirby\Toolkit\Collection
+     * @return \Kirby\Cms\Collection
      */
     public function prevNavigation()
     {
@@ -161,7 +161,7 @@ trait PageSiblings
     /**
      * Returns siblings of defined navigation
      *
-     * @return \Kirby\Toolkit\Collection
+     * @return \Kirby\Cms\Collection
      */
     protected function siblingsNavigation()
     {
@@ -186,7 +186,7 @@ trait PageSiblings
      * Returns filtered siblings for defined navigation
      *
      * @param Collection $collection
-     * @return \Kirby\Toolkit\Collection
+     * @return \Kirby\Cms\Collection
      */
     protected function filterNavigation(Collection $collection)
     {
