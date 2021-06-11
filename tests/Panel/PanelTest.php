@@ -3,9 +3,9 @@
 namespace Kirby\Panel;
 
 use Kirby\Cms\App;
+use Kirby\Filesystem\Dir;
+use Kirby\Filesystem\F;
 use Kirby\Toolkit\A;
-use Kirby\Toolkit\Dir;
-use Kirby\Toolkit\F;
 use Kirby\Toolkit\Str;
 use PHPUnit\Framework\TestCase;
 
