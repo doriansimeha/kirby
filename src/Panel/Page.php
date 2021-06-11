@@ -57,6 +57,39 @@ class Page extends Model
         return '(link: ' . $this->model->id() . ' text: ' . $this->model->title() . ')';
     }
 
+    /**
+     * Returns filtered siblings for defined navigation
+     *
+     * @param \Kirby\Cms\Collection $collection
+     * @return \Kirby\Cms\Collection
+     */
+    public function filter(Collection $collection)
+    {
+        $page       = $this->model;
+        $navigation = $page->blueprint()->navigation();
+
+        if (empty($navigation) === false) {
+            $statuses  = (array)($navigation['status'] ?? $page->status());
+            $templates = (array)($navigation['template'] ?? $page->intendedTemplate());
+
+            // do not filter if template navigation is all
+            if (in_array('all', $templates) === false) {
+                $collection = $collection->filter('intendedTemplate', 'in', $templates);
+            }
+
+            // do not filter if status navigation is all
+            if (in_array('all', $statuses) === false) {
+                $collection = $collection->filter('status', 'in', $statuses);
+            }
+        } else {
+            $collection = $collection
+                ->filter('intendedTemplate', $page->intendedTemplate())
+                ->filter('status', $page->status());
+        }
+
+        return $collection->filter('isReadable', true);
+    }
+
 
     /**
      * Returns the Panel icon definition
@@ -215,14 +248,13 @@ class Page extends Model
     public function siblings()
     {
         $page       = $this->model;
-        $model      = $page->parentModel();
         $navigation = $page->blueprint()->navigation();
         $sortBy     = $navigation['sortBy'] ?? null;
         $status     = $navigation['status'] ?? null;
 
         // if status is defined in navigation, all items in the collection are used (drafts, listed and unlisted)
         // otherwise it depends on the status of the page
-        $collection = $status !== null ? $model->childrenAndDrafts() : $page->siblingsCollection();
+        $collection = $status !== null ? $page->parentModel()->childrenAndDrafts() : $page->siblings();
 
         // sort the collection if custom sortBy defined in navigation
         // otherwise default sorting will apply
@@ -231,38 +263,5 @@ class Page extends Model
         }
 
         return $collection;
-    }
-
-    /**
-     * Returns filtered siblings for defined navigation
-     *
-     * @param \Kirby\Cms\Collection $collection
-     * @return \Kirby\Cms\Collection
-     */
-    public function filter(Collection $collection)
-    {
-        $page       = $this->model;
-        $navigation = $page->blueprint()->navigation();
-
-        if (empty($navigation) === false) {
-            $statuses  = (array)($navigation['status'] ?? $page->status());
-            $templates = (array)($navigation['template'] ?? $page->intendedTemplate());
-
-            // do not filter if template navigation is all
-            if (in_array('all', $templates) === false) {
-                $collection = $collection->filter('intendedTemplate', 'in', $templates);
-            }
-
-            // do not filter if status navigation is all
-            if (in_array('all', $statuses) === false) {
-                $collection = $collection->filter('status', 'in', $statuses);
-            }
-        } else {
-            $collection = $collection
-                ->filter('intendedTemplate', $page->intendedTemplate())
-                ->filter('status', $page->status());
-        }
-
-        return $collection->filter('isReadable', true);
     }
 }

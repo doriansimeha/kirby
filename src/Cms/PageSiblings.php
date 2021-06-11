@@ -118,7 +118,7 @@ trait PageSiblings
      *
      * @return \Kirby\Cms\Collection
      */
-    public function siblingsCollection()
+    protected function siblingsCollection()
     {
         if ($this->isDraft() === true) {
             return $this->parentModel()->drafts();
