@@ -44,7 +44,12 @@ return [
         'isSortable' => function (Page $page) {
             return $page->isSortable();
         },
+        /**
+         * @deprecated 3.6.0
+         * @todo Remove in 3.7.0
+         */
         'next' => function (Page $page) {
+            deprecated('The `next` field has been deprecated and will be removed in 3.7.0');
             return $page->panel()->next();
         },
         'num' => function (Page $page) {
@@ -65,7 +70,12 @@ return [
         'parents' => function (Page $page) {
             return $page->parents()->flip();
         },
+        /**
+         * @deprecated 3.6.0
+         * @todo Remove in 3.7.0
+         */
         'prev' => function (Page $page) {
+            deprecated('The `prev` field has been deprecated and will be removed in 3.7.0');
             return $page->panel()->prev();
         },
         'previewUrl' => function (Page $page) {

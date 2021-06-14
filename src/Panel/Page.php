@@ -135,6 +135,16 @@ class Page extends Model
     }
 
     /**
+     * Returns the next page in defined navigation
+     *
+     * @return \Kirby\Cms\Collection
+     */
+    public function next()
+    {
+        return $this->filter($this->model->nextAll($this->siblings()))->first();
+    }
+
+    /**
      * Returns the full path without leading slash
      *
      * @internal
@@ -161,6 +171,16 @@ class Page extends Model
             'hasChildren' => $this->model->hasChildren(),
             'url'         => $this->model->url()
         ]);
+    }
+
+    /**
+     * Returns the prev page in defined navigation
+     *
+     * @return \Kirby\Cms\Collection
+     */
+    public function prev()
+    {
+        return $this->filter($this->model->prevAll($this->siblings()))->last();
     }
 
     /**
@@ -218,26 +238,6 @@ class Page extends Model
             'props'      => $this->props(),
             'title'      => $page->title()->toString(),
         ];
-    }
-
-    /**
-     * Returns the next page in defined navigation
-     *
-     * @return \Kirby\Cms\Collection
-     */
-    public function next()
-    {
-        return $this->filter($this->model->nextAll($this->siblings()))->first();
-    }
-
-    /**
-     * Returns the prev page in defined navigation
-     *
-     * @return \Kirby\Cms\Collection
-     */
-    public function prev()
-    {
-        return $this->filter($this->model->prevAll($this->siblings()))->last();
     }
 
     /**
