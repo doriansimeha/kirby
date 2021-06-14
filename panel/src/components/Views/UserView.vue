@@ -90,7 +90,7 @@
 
           <template #right>
             <k-prev-next
-              v-if="$options.prevnext"
+              v-if="$options.navigation"
               :prev="prev"
               :next="next"
             />
@@ -129,7 +129,7 @@ import ModelView from "./ModelView.vue";
 
 export default {
   extends: ModelView,
-  prevnext: true,
+  navigation: true,
   computed: {
     id() {
       return "users/" + this.model.id;

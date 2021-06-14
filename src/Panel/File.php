@@ -256,11 +256,11 @@ class File extends Model
             ],
             'next' => function () use ($file, $siblings): ?array {
                 $next = $siblings->nth($siblings->indexOf($file) + 1);
-                return $next ? $next->panel()->prevnext('filename') : null;
+                return $next ? $next->panel()->navigation('filename') : null;
             },
             'prev' => function () use ($file, $siblings): ?array {
                 $prev = $siblings->nth($siblings->indexOf($file) - 1);
-                return $prev ? $prev->panel()->prevnext('filename') : null;
+                return $prev ? $prev->panel()->navigation('filename') : null;
             }
         ]);
     }

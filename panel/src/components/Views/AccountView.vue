@@ -3,6 +3,6 @@ import UserView from "./UserView.vue";
 
 export default {
   extends: UserView,
-  prevnext: false
+  navigation: false
 };
 </script>

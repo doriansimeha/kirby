@@ -297,9 +297,18 @@ class ModelTest extends TestCase
     }
 
     /**
-     * @covers ::prevnext
+     * @covers ::imagePlaceholder
      */
-    public function testPrevNext()
+    public function testImagePlaceholder()
+    {
+        $this->assertIsString(Model::imagePlaceholder());
+        $this->assertStringStartsWith('data:image/gif;base64,', Model::imagePlaceholder());
+    }
+
+    /**
+     * @covers ::navigation
+     */
+    public function testNavigation()
     {
         $panel = $this->panel([
             'content' => [
@@ -308,22 +317,13 @@ class ModelTest extends TestCase
             ]
         ]);
 
-        $prevnext = $panel->prevnext();
-        $this->assertSame('/custom', $prevnext['link']);
-        $this->assertSame($title, $prevnext['tooltip']);
+        $navigation = $panel->navigation();
+        $this->assertSame('/custom', $navigation['link']);
+        $this->assertSame($title, $navigation['tooltip']);
 
-        $prevnext = $panel->prevnext('author');
-        $this->assertSame('/custom', $prevnext['link']);
-        $this->assertSame($author, $prevnext['tooltip']);
-    }
-
-    /**
-     * @covers ::imagePlaceholder
-     */
-    public function testImagePlaceholder()
-    {
-        $this->assertIsString(Model::imagePlaceholder());
-        $this->assertStringStartsWith('data:image/gif;base64,', Model::imagePlaceholder());
+        $navigation = $panel->navigation('author');
+        $this->assertSame('/custom', $navigation['link']);
+        $this->assertSame($author, $navigation['tooltip']);
     }
 
     /**

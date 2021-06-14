@@ -222,6 +222,23 @@ abstract class Model
     }
 
     /**
+     * Returns link and tooltip
+     * used for prev/next navigation
+     *
+     * @internal
+     *
+     * @param string $tooltip
+     * @return array
+     */
+    public function navigation(string $tooltip = 'title'): array
+    {
+        return [
+            'link'    => $this->url(true),
+            'tooltip' => (string)$this->model->{$tooltip}()
+        ];
+    }
+
+    /**
      * Returns lock info for the Panel
      *
      * @return array|false array with lock info,
@@ -295,23 +312,6 @@ abstract class Model
             'info'  => $this->model->toString($params['info'] ?? false),
             'link'  => $this->url(true),
             'text'  => $this->model->toString($params['text'] ?? false),
-        ];
-    }
-
-    /**
-     * Returns link and tooltip
-     * used for prev/next navigation
-     *
-     * @internal
-     *
-     * @param string $tooltip
-     * @return array|null
-     */
-    public function prevnext($tooltip = 'title'): ?array
-    {
-        return [
-            'link'    => $this->url(true),
-            'tooltip' => (string)$this->model->$tooltip()
         ];
     }
 

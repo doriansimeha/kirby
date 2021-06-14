@@ -108,11 +108,11 @@ class User extends Model
             ],
             'next' => function () use ($user) {
                 $next = $user->next();
-                return $next ? $next->panel()->prevnext('username') : null;
+                return $next ? $next->panel()->navigation('username') : null;
             },
             'prev' => function () use ($user) {
                 $prev = $user->prev();
-                return $prev ? $prev->panel()->prevnext('username') : null;
+                return $prev ? $prev->panel()->navigation('username') : null;
             }
         ]);
     }

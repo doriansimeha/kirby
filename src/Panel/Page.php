@@ -206,11 +206,11 @@ class Page extends Model
             ],
             'next' => function () use ($page) {
                 $next = $page->panel()->next();
-                return $next ? $next->panel()->prevnext('title') : null;
+                return $next ? $next->panel()->navigation('title') : null;
             },
             'prev'   => function () use ($page) {
                 $prev = $page->panel()->prev();
-                return $prev ? $prev->panel()->prevnext('title') : null;
+                return $prev ? $prev->panel()->navigation('title') : null;
             },
             'status' => function () use ($page) {
                 if ($status = $page->status()) {
