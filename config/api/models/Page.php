@@ -48,10 +48,12 @@ return [
          * @deprecated 3.6.0
          * @todo Remove in 3.7.0
          */
+        // @codeCoverageIgnoreStart
         'next' => function (Page $page) {
             deprecated('The `next` field has been deprecated and will be removed in 3.7.0');
             return $page->panel()->next();
         },
+        // @codeCoverageIgnoreEnd
         'num' => function (Page $page) {
             return $page->num();
         },
@@ -74,10 +76,12 @@ return [
          * @deprecated 3.6.0
          * @todo Remove in 3.7.0
          */
+        // @codeCoverageIgnoreStart
         'prev' => function (Page $page) {
             deprecated('The `prev` field has been deprecated and will be removed in 3.7.0');
             return $page->panel()->prev();
         },
+        // @codeCoverageIgnoreEnd
         'previewUrl' => function (Page $page) {
             return $page->previewUrl();
         },

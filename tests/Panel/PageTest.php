@@ -882,4 +882,69 @@ class PageTest extends TestCase
         $this->assertSame($expectedPrev, $panel->prev());
         $this->assertSame($expectedNext, $panel->next());
     }
+
+    public function testNavigationFour()
+    {
+        $app = $this->app->clone([
+            'roots' => [
+                'index' => $this->tmp,
+            ],
+            'blueprints' => [
+                'pages/g' => [
+                    'title' => 'A',
+                    'navigation' => [
+                        'status' => 'all',
+                        'template' => 'all',
+                        'sortBy' => 'slug desc'
+                    ]
+                ],
+                'pages/h' => [
+                    'title' => 'B',
+                    'navigation' => [
+                        'status' => 'all',
+                        'template' => 'all',
+                        'sortBy' => 'slug desc'
+                    ]
+                ]
+            ]
+        ]);
+
+        $app->impersonate('kirby');
+
+        $parent = ModelPage::create([
+            'slug' => 'test'
+        ]);
+
+        $parent->createChild([
+            'slug'     => 'a',
+            'template' => 'g'
+        ]);
+
+        $expectedNext = $parent->createChild([
+            'slug'     => 'b',
+            'template' => 'h'
+        ]);
+
+        $parent->createChild([
+            'slug'     => 'c',
+            'template' => 'g'
+        ]);
+
+        $expectedPrev = $parent->createChild([
+            'slug'     => 'd',
+            'template' => 'h'
+        ]);
+
+        $page  = $app->page('test/c');
+        $panel = new Page($page);
+
+        $navigation = $page->blueprint()->navigation();
+        $this->assertSame([
+            'status' => 'all',
+            'template' => 'all',
+            'sortBy' => 'slug desc'
+        ], $navigation);
+        $this->assertSame($expectedPrev, $panel->prev());
+        $this->assertSame($expectedNext, $panel->next());
+    }
 }
