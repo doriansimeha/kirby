@@ -36,7 +36,7 @@ jobs:
 
       - name: Setup PHP cache environment
         id: ext-cache
-        uses: shivammathur/cache-extensions@fd2695d35c6a2d131a586986d11f1e390c33c77d # pin@v1
+        uses: shivammathur/cache-extensions@1609585abc46502e010d845b215c5be8722960bc # pin@v1.5.1
         with:
           php-version: ${{ matrix.php }}
           extensions: ${{ env.extensions }}
@@ -50,7 +50,7 @@ jobs:
           restore-keys: ${{ steps.ext-cache.outputs.key }}
 
       - name: Setup PHP environment
-        uses: shivammathur/setup-php@27fc7bb418e73a1462a5604e3ea30e58ec1a6e1f # pin@v2
+        uses: shivammathur/setup-php@81a37035bc57df7fa3025c087696a10c616663a5 # pin@v2.11.0
         with:
           php-version: ${{ matrix.php }}
           extensions: ${{ env.extensions }}
@@ -133,7 +133,7 @@ jobs:
 
       - name: Setup PHP cache environment
         id: ext-cache
-        uses: shivammathur/cache-extensions@fd2695d35c6a2d131a586986d11f1e390c33c77d # pin@v1
+        uses: shivammathur/cache-extensions@1609585abc46502e010d845b215c5be8722960bc # pin@v1.5.1
         with:
           php-version: ${{ env.php }}
           extensions: ${{ env.extensions }}
@@ -147,7 +147,7 @@ jobs:
           restore-keys: ${{ steps.ext-cache.outputs.key }}
 
       - name: Setup PHP environment
-        uses: shivammathur/setup-php@27fc7bb418e73a1462a5604e3ea30e58ec1a6e1f # pin@v2
+        uses: shivammathur/setup-php@81a37035bc57df7fa3025c087696a10c616663a5 # pin@v2.11.0
         with:
           php-version: ${{ env.php }}
           extensions: ${{ env.extensions }}
@@ -222,7 +222,7 @@ jobs:
 
       - name: Setup PHP cache environment
         id: ext-cache
-        uses: shivammathur/cache-extensions@fd2695d35c6a2d131a586986d11f1e390c33c77d # pin@v1
+        uses: shivammathur/cache-extensions@1609585abc46502e010d845b215c5be8722960bc # pin@v1.5.1
         with:
           php-version: ${{ env.php }}
           extensions: ${{ env.extensions }}
@@ -237,7 +237,7 @@ jobs:
 
       - name: Setup PHP environment
         id: finishPrepare
-        uses: shivammathur/setup-php@27fc7bb418e73a1462a5604e3ea30e58ec1a6e1f # pin@v2
+        uses: shivammathur/setup-php@81a37035bc57df7fa3025c087696a10c616663a5 # pin@v2.11.0
         with:
           php-version: ${{ env.php }}
           extensions: ${{ env.extensions }}
@@ -298,7 +298,7 @@ jobs:
         working-directory: panel
 
       - name: Setup PHP environment
-        uses: shivammathur/setup-php@27fc7bb418e73a1462a5604e3ea30e58ec1a6e1f # pin@v2
+        uses: shivammathur/setup-php@81a37035bc57df7fa3025c087696a10c616663a5 # pin@v2.11.0
         with:
           php-version: ${{ env.php }}
           coverage: none
