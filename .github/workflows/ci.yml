@@ -154,7 +154,7 @@ jobs:
           coverage: none
 
       - name: Install dependencies
-        uses: cypress-io/github-action@1db146275576798796bc39ef83d739924145298a # pin@v2
+        uses: cypress-io/github-action@d2b5039cb4888cf1f0bb9e808f904f7093e0cb2a # pin@v2.11.5
         with:
           working-directory: kirby/panel
           runTests: false
@@ -168,7 +168,7 @@ jobs:
         working-directory: kirby/panel
 
       - name: Run tests
-        uses: cypress-io/github-action@1db146275576798796bc39ef83d739924145298a # pin@v2
+        uses: cypress-io/github-action@d2b5039cb4888cf1f0bb9e808f904f7093e0cb2a # pin@v2.11.5
         with:
           working-directory: kirby/panel
           install: false
