@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.4 # pin@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # pin@v2.3.4
         with:
           fetch-depth: 2
 
@@ -43,7 +43,7 @@ jobs:
           key: php-v1
 
       - name: Cache PHP extensions
-        uses: actions/cache@1c6fb82ebbd610035c324e764e5e74d0e82f8a60 # pin@v2
+        uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353 # pin@v2.1.6
         with:
           path: ${{ steps.ext-cache.outputs.dir }}
           key: ${{ steps.ext-cache.outputs.key }}
@@ -65,7 +65,7 @@ jobs:
 
       - name: Cache analysis data
         id: finishPrepare
-        uses: actions/cache@1c6fb82ebbd610035c324e764e5e74d0e82f8a60 # pin@v2
+        uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353 # pin@v2.1.6
         with:
           path: ~/.cache/psalm
           key: backend-analysis-${{ matrix.php }}
@@ -111,12 +111,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.4 # pin@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # pin@v2.3.4
         with:
           path: kirby
 
       - name: Checkout Sandbox
-        uses: actions/checkout@v2.3.4 # pin@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # pin@v2.3.4
         with:
           repository: getkirby/sandbox
           path: sandbox
@@ -140,7 +140,7 @@ jobs:
           key: e2e-v1
 
       - name: Cache PHP extensions
-        uses: actions/cache@1c6fb82ebbd610035c324e764e5e74d0e82f8a60 # pin@v2
+        uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353 # pin@v2.1.6
         with:
           path: ${{ steps.ext-cache.outputs.dir }}
           key: ${{ steps.ext-cache.outputs.key }}
@@ -215,7 +215,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.4 # pin@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # pin@v2.3.4
 
       - name: Preparations
         run: mkdir sarif
@@ -229,7 +229,7 @@ jobs:
           key: php-analysis-v1
 
       - name: Cache PHP extensions
-        uses: actions/cache@1c6fb82ebbd610035c324e764e5e74d0e82f8a60 # pin@v2
+        uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353 # pin@v2.1.6
         with:
           path: ${{ steps.ext-cache.outputs.dir }}
           key: ${{ steps.ext-cache.outputs.key }}
@@ -281,13 +281,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.4 # pin@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # pin@v2.3.4
 
       - name: Set up Node.js problem matchers
         uses: actions/setup-node@0696555e99b7a8260864ca027af4b004eea59379 # pin@v2
 
       - name: Cache npm dependencies
-        uses: actions/cache@1c6fb82ebbd610035c324e764e5e74d0e82f8a60 # pin@v2
+        uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353 # pin@v2.1.6
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -306,7 +306,7 @@ jobs:
 
       - name: Cache analysis data
         id: finishPrepare
-        uses: actions/cache@1c6fb82ebbd610035c324e764e5e74d0e82f8a60 # pin@v2
+        uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353 # pin@v2.1.6
         with:
           path: ~/.php-cs-fixer
           key: coding-style
