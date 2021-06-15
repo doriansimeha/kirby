@@ -187,14 +187,14 @@ jobs:
 
       - name: Archive Cypress screenshots
         if: failure()
-        uses: actions/upload-artifact@11830c9f4d30053679cb8904e3b3ce1b8c00bf40 # pin@v2
+        uses: actions/upload-artifact@ee69f02b3dfdecd58bb31b4d133da38ba6fe3700 # pin@v2.2.3
         with:
           name: cypress-screenshots
           path: kirby/panel/cypress/screenshots
 
       - name: Archive Cypress videos
         if: always()
-        uses: actions/upload-artifact@11830c9f4d30053679cb8904e3b3ce1b8c00bf40 # pin@v2
+        uses: actions/upload-artifact@ee69f02b3dfdecd58bb31b4d133da38ba6fe3700 # pin@v2.2.3
         with:
           name: cypress-videos
           path: kirby/panel/cypress/videos
