@@ -260,6 +260,7 @@ const Fiber = {
     {
       data = {},
       headers = {},
+      include = [],
       only = [],
       preserveScroll = false,
       preserveState = false,
@@ -279,6 +280,11 @@ const Fiber = {
       );
     }
 
+    // make sure include is an array
+    if (Array.isArray(include) === false) {
+      include = [include];
+    }
+
     // make sure only is an array
     if (Array.isArray(only) === false) {
       only = [only];
@@ -294,12 +300,8 @@ const Fiber = {
         headers: {
           ...headers,
           "X-Fiber": true,
-          ...(only.length
-            ? {
-                "X-Fiber-Component": this.page.$view.component,
-                "X-Fiber-Include": only.join(",")
-              }
-            : {})
+          "X-Fiber-Include": include.join(","),
+          "X-Fiber-Only": only.join(","),
         }
       });
 
