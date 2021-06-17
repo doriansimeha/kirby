@@ -1045,6 +1045,7 @@ class Panel
         $view['breadcrumb'] = $view['breadcrumb'] ?? [];
         $view['code']       = $view['code'] ?? 200;
         $view['path']       = Str::after($kirby->path(), '/');
+        $view['timestamp']  = time();
         $view['props']      = $view['props'] ?? [];
         $view['search']     = $view['search'] ?? $kirby->option('panel.search.type', 'pages');
 
